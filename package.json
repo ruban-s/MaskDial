@@ -1,6 +1,6 @@
 {
   "name": "maskdial",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A dynamic jQuery plugin for phone number formatting. Simplify global number input with auto-formatting based on ISO or phone code.",
   "main": "format.min.js",
   "scripts": {

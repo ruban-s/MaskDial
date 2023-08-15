@@ -305,42 +305,38 @@
         options = options || {};
         const defaultMatrix = '###############';
     
-        const maskList = [
-            { iso: 'US', format: '(###) ###-####', code: '+1' },
-            { iso: 'UK', format: '#### ### ####', code: '+44' },
-            // ... other countries
-        ];
-    
-        function determineMask(iso, code) {
+        function determineMask(iso, phoneCode) {
             if (iso) {
                 return maskList.find(mask => mask.iso === iso);
-            } else if (code) {
-                return maskList.find(mask => mask.code === code);
+            } else if (phoneCode) {
+                let normalizedPhoneCode = phoneCode.startsWith('+') ? phoneCode : '+' + phoneCode;
+                return maskList.find(mask => mask.code === normalizedPhoneCode);
             }
             return null;
         }
+             
     
         function applyMask(inputElement, forceFormat = false) {
-            const phone = inputElement.value.replace(/[\s#-)(]/g, '');
+            let regexToRemove = options.phoneCode ? /[\s#()-]/g : /[\s#+()-]/g;  // Adjusted regex pattern
+            const phone = inputElement.value.replace(regexToRemove, '');
             let matrix;
             let prefix = "";
-    
-            const currentMask = determineMask(options.iso, options.code);
+            
+            const currentMask = determineMask(options.iso, options.phoneCode);
             if (currentMask) {
                 matrix = currentMask.format;
                 prefix = currentMask.code + " ";
             } else {
                 matrix = defaultMatrix;
-                prefix = "+";  // Add the + sign if no ISO or code is provided
             }
-    
+        
             let i = 0;
             const cleanValue = phone.replace(/\D/g, '');
-    
+        
             const formattedNumber = matrix.replace(/./g, char => {
                 return /[#\d]/.test(char) && i < cleanValue.length ? cleanValue.charAt(i++) : i >= cleanValue.length ? '' : char;
             }).trim();
-    
+        
             // If the options.prependCode is set to true, prepend the code
             if (options.prependCode) {
                 inputElement.value = `${prefix}${formattedNumber}`;
@@ -348,6 +344,7 @@
                 inputElement.value = formattedNumber;
             }
         }
+        
     
         return this.each(function() {
             const $inputElement = $(this);
@@ -366,6 +363,5 @@
                 applyMask(this, true); // force format on blur
             });
         });
-    };
-         
+    };  
 })(jQuery);
