@@ -1,0 +1,40 @@
+{
+  "name": "maskdial",
+  "version": "1.0.0",
+  "description": "A dynamic jQuery plugin for phone number formatting. Simplify global number input with auto-formatting based on ISO or phone code.",
+  "main": "format.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ruban-s/MaskDial.git"
+  },
+  "keywords": [ 
+    "phone",
+    "number",
+    "formatting",
+    "mask",
+    "masking",
+    "input",
+    "field",
+    "international",
+    "jQuery",
+    "plugin",
+    "dial",
+    "code",
+    "ISO", 
+    "country",
+    "maskdial",
+    "autocomplete",
+    "validation",
+    "telephone",
+    "mobile"
+  ],
+  "author": "ruban-s",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ruban-s/MaskDial/issues"
+  },
+  "homepage": "https://github.com/ruban-s/MaskDial#readme"
+}
