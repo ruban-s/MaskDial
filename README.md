@@ -17,13 +17,13 @@
 
 ### Via CDN:
 ```html
-<script src="path_to_cdn/maskdial.min.js"></script>
+<script src="format.min.js"></script>
 ```
 
 ### Or download and link locally:
 
 ```html
-<script src="path_to_your_assets_folder/maskdial.min.js"></script>
+<script src="format.min.js"></script>
 ```
 
 ### 🚀 Usage
