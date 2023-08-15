@@ -303,57 +303,69 @@
     ];
     $.fn.maskedFormat = function(options) {
         options = options || {};
-        
         const defaultMatrix = '###############';
     
-        function determineMask(iso, phoneCode) {
+        const maskList = [
+            { iso: 'US', format: '(###) ###-####', code: '+1' },
+            { iso: 'UK', format: '#### ### ####', code: '+44' },
+            // ... other countries
+        ];
+    
+        function determineMask(iso, code) {
             if (iso) {
                 return maskList.find(mask => mask.iso === iso);
-            } else if (phoneCode) {
-                return maskList.find(mask => mask.phoneCode === phoneCode);
+            } else if (code) {
+                return maskList.find(mask => mask.code === code);
             }
             return null;
         }
     
-        function applyMask(inputElement) {
+        function applyMask(inputElement, forceFormat = false) {
+            const phone = inputElement.value.replace(/[\s#-)(]/g, '');
             let matrix;
-            let prependCode = "";
-            const currentMask = determineMask(options.iso, options.phoneCode);
-            
+            let prefix = "";
+    
+            const currentMask = determineMask(options.iso, options.code);
             if (currentMask) {
                 matrix = currentMask.format;
-                prependCode = currentMask.phoneCode;
+                prefix = currentMask.code + " ";
             } else {
                 matrix = defaultMatrix;
-                maskList.forEach(item => {
-                    const code = item.phoneCode;
-                    const phone = inputElement.value.replace(/[\s#-)(]/g, '');
-    
-                    if (phone.startsWith(code)) {
-                        matrix = item.format;
-                        prependCode = item.phoneCode;
-                    }
-                });
+                prefix = "+";  // Add the + sign if no ISO or code is provided
             }
     
             let i = 0;
-            const cleanValue = inputElement.value.replace(/\D/g, '');
+            const cleanValue = phone.replace(/\D/g, '');
     
-            inputElement.value = `${prependCode} ${matrix.replace(/./g, char => {
+            const formattedNumber = matrix.replace(/./g, char => {
                 return /[#\d]/.test(char) && i < cleanValue.length ? cleanValue.charAt(i++) : i >= cleanValue.length ? '' : char;
-            })}`.trim();
+            }).trim();
+    
+            // If the options.prependCode is set to true, prepend the code
+            if (options.prependCode) {
+                inputElement.value = `${prefix}${formattedNumber}`;
+            } else {
+                inputElement.value = formattedNumber;
+            }
         }
     
         return this.each(function() {
             const $inputElement = $(this);
     
-            if (!determineMask(options.iso, options.phoneCode)) {
-                $inputElement.val('+');
-            }
+            $inputElement.on('focus', function() {
+                if (this.value.length <= 1) { 
+                    applyMask(this);
+                }
+            });
     
-            $inputElement.on('input focus blur', function() {
+            $inputElement.on('input', function() {
                 applyMask(this);
             });
+    
+            $inputElement.on('blur', function() {
+                applyMask(this, true); // force format on blur
+            });
         });
-    };    
+    };
+         
 })(jQuery);
