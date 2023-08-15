@@ -17,7 +17,7 @@
 
 ### Via CDN:
 ```html
-<script src="https://unpkg.com/maskdial@1.0.0/format.min.js"></script>
+<script src="https://unpkg.com/maskdial@1.0.3/format.min.js"></script>
 ```
 
 ### Or download and link locally:
