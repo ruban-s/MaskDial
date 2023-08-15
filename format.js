@@ -5,8 +5,8 @@
  * Last Updated: 14th August 2023
  * Dependencies: jQuery
  */
-!(function (o) {
-    let e = [
+!(function ($) {
+    let maskList = [
         { iso: "SH", code: "+247", format: "####" },
         { iso: "SH", code: "+290", format: "####" },
         { iso: "SH", code: "+290", format: "####" },
@@ -301,37 +301,59 @@
         { iso: "CN", code: "+86", format: "## ##### #####" },
         { iso: "KP", code: "+850", format: "#### #############" },
     ];
-    o.fn.maskedFormat = function (t) {
-        let i = (t = t || {}).iso,
-            a = t.phoneCode,
-            r;
-        function s() {
-            let o,
-                t = "";
-            r
-                ? ((o = r.format), (t = r.phoneCode))
-                : ((o = "###############"),
-                  e.forEach((e) => {
-                      let i = e.phoneCode;
-                      this.value.replace(/[\s#-)(]/g, "").startsWith(i) && ((o = e.format), (t = e.phoneCode));
-                  }));
-            let i = 0,
-                a = this.value.replace(/\D/g, "");
-            this.value =
-                t +
-                " " +
-                o
-                    .replace(/./g, function (o) {
-                        return /[#\d]/.test(o) && i < a.length ? a.charAt(i++) : i >= a.length ? "" : o;
-                    })
-                    .trim();
+    $.fn.maskedFormat = function(options) {
+        options = options || {};
+        
+        const defaultMatrix = '###############';
+    
+        function determineMask(iso, phoneCode) {
+            if (iso) {
+                return maskList.find(mask => mask.iso === iso);
+            } else if (phoneCode) {
+                return maskList.find(mask => mask.phoneCode === phoneCode);
+            }
+            return null;
         }
-        return (
-            i ? (r = e.find((o) => o.iso === i)) : a && (r = e.find((o) => o.phoneCode === a)),
-            this.each(function () {
-                let e = o(this);
-                r || e.val("+"), e.on("input focus blur", s);
-            })
-        );
-    };
+    
+        function applyMask(inputElement) {
+            let matrix;
+            let prependCode = "";
+            const currentMask = determineMask(options.iso, options.phoneCode);
+            
+            if (currentMask) {
+                matrix = currentMask.format;
+                prependCode = currentMask.phoneCode;
+            } else {
+                matrix = defaultMatrix;
+                maskList.forEach(item => {
+                    const code = item.phoneCode;
+                    const phone = inputElement.value.replace(/[\s#-)(]/g, '');
+    
+                    if (phone.startsWith(code)) {
+                        matrix = item.format;
+                        prependCode = item.phoneCode;
+                    }
+                });
+            }
+    
+            let i = 0;
+            const cleanValue = inputElement.value.replace(/\D/g, '');
+    
+            inputElement.value = `${prependCode} ${matrix.replace(/./g, char => {
+                return /[#\d]/.test(char) && i < cleanValue.length ? cleanValue.charAt(i++) : i >= cleanValue.length ? '' : char;
+            })}`.trim();
+        }
+    
+        return this.each(function() {
+            const $inputElement = $(this);
+    
+            if (!determineMask(options.iso, options.phoneCode)) {
+                $inputElement.val('+');
+            }
+    
+            $inputElement.on('input focus blur', function() {
+                applyMask(this);
+            });
+        });
+    };    
 })(jQuery);
