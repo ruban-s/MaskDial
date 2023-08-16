@@ -9,15 +9,18 @@
 ## 🌍 Features
 
 - **Automatic Format Detection**: Just provide a country ISO code or phone code, and MaskDial will do the rest.
-- **Fallback to Manual**: Even if no country or phone code is provided, the plugin intelligently guesses the format based on the entered number.
 - **Customizable**: Easily extend or customize the masks to suit specific needs.
-- **Lightweight**: Doesn't bloat your projects; it's as lightweight as plugins come!
+- **Lightweight**: Doesn't bloat your projects; it's as lightweight as plugins come!.
+
+### Upcoming
+
+- **Fallback to Manual**: Even if no country or phone code is provided, the plugin intelligently guesses the format based on the entered number.
 
 ## 🔧 Installation
 
 ### Via CDN:
 ```html
-<script src="https://unpkg.com/maskdial@1.0.3/format.min.js"></script>
+<script src="https://unpkg.com/maskdial@1.0.4/format.min.js"></script>
 ```
 
 ### Or download and link locally:
@@ -33,7 +36,8 @@
 
 ```html
 $('#your-input-id').maskedFormat({
-    iso: 'US' // Or use phoneCode: '+1'
+    iso: 'US' // Or  
+    phoneCode: '+1' // supported with or without plus(+) symbol
 });
 
 ```
