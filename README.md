@@ -1,6 +1,6 @@
 # MaskDial: Phone Number Masking jQuery Plugin 📞
 
-![version-badge](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![version-badge](https://img.shields.io/badge/version-1.0.4-blue.svg)
 ![license-badge](https://img.shields.io/badge/license-MIT-green.svg)
 ![dependency-badge](https://img.shields.io/badge/dependency-jQuery-blue.svg)
 
@@ -27,6 +27,12 @@
 
 ```html
 <script src="format.min.js"></script>
+```
+
+### Or Install via NPM:
+
+```html
+npm i maskdial
 ```
 
 ### 🚀 Usage
