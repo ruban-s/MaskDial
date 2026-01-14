@@ -1,0 +1,20 @@
+# Source maps - not needed in production
+*.map
+
+# Development files
+src/
+tests/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.eslintrc*
+.prettierrc*
+
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+
+# Temp files
+temp/
+*.log
