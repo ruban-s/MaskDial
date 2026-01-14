@@ -1,65 +1,212 @@
-# MaskDial: Phone Number Masking jQuery Plugin 📞
+# MaskDial
 
-![version-badge](https://img.shields.io/badge/version-1.0.4-blue.svg)
-![license-badge](https://img.shields.io/badge/license-MIT-green.svg)
-![dependency-badge](https://img.shields.io/badge/dependency-jQuery-blue.svg)
+Modern phone number formatting library with TypeScript support. Available as both vanilla JavaScript and jQuery plugin.
 
-**MaskDial** is a sleek, lightweight jQuery plugin crafted for formatting and masking phone numbers with ease. It provides dynamic phone number formatting based on the user's country or phone code. Whether you're building a web app for global users or just want to provide a better UX for phone number inputs, MaskDial is your perfect companion.
+![version](https://img.shields.io/npm/v/maskdial)
+![license](https://img.shields.io/npm/l/maskdial)
+![bundle size](https://img.shields.io/bundlephobia/minzip/maskdial)
+![typescript](https://img.shields.io/badge/TypeScript-Ready-blue)
 
-## 🌍 Features
+## Features
 
-- **Automatic Format Detection**: Just provide a country ISO code or phone code, and MaskDial will do the rest.
-- **Customizable**: Easily extend or customize the masks to suit specific needs.
-- **Lightweight**: Doesn't bloat your projects; it's as lightweight as plugins come!.
+- **TypeScript Support** - Full type definitions included
+- **Dual Versions** - Vanilla JS and jQuery plugin from single package
+- **Powered by libphonenumber-js** - Accurate formatting for 200+ countries
+- **E.164 & National Formats** - Get phone numbers in any format
+- **Validation** - Built-in phone number validation
+- **Smart Cursor** - Cursor position maintained during formatting
+- **Lightweight** - ~80KB with libphonenumber-js/min
 
-### Upcoming
+## Installation
 
-- **Fallback to Manual**: Even if no country or phone code is provided, the plugin intelligently guesses the format based on the entered number.
-
-## 🔧 Installation
-
-### Via CDN:
-```html
-<script src="https://unpkg.com/maskdial@1.0.4/format.min.js"></script>
+```bash
+npm install maskdial
 ```
 
-### Or download and link locally:
+### CDN
 
 ```html
-<script src="format.min.js"></script>
+<!-- UMD bundle (includes libphonenumber-js) -->
+<script src="https://unpkg.com/maskdial/dist/maskdial.umd.js"></script>
 ```
 
-### Or Install via NPM:
+## Usage
 
-```html
-npm i maskdial
+### Vanilla JavaScript
+
+```javascript
+import { MaskDial } from 'maskdial'
+
+const mask = new MaskDial('#phone', {
+  country: 'US',
+  onFormat: (data) => {
+    console.log('Formatted:', data.formatted)
+    console.log('E.164:', data.e164)
+    console.log('Valid:', data.isValid)
+  }
+})
+
+// Get values
+mask.getValue()        // "(202) 555-1234"
+mask.getE164()         // "+12025551234"
+mask.getNational()     // "(202) 555-1234"
+mask.getInternational() // "+1 202-555-1234"
+mask.getDigits()       // "2025551234"
+
+// Validation
+mask.isValid()         // true
+mask.isPossible()      // true
+
+// Country
+mask.getCountry()      // "US"
+mask.setCountry('GB')  // Change country
+
+// Cleanup
+mask.destroy()
 ```
 
-### 🚀 Usage
+### jQuery Plugin
 
-- Ensure you've linked both jQuery and MaskDial.
-- Initialize using the plugin on your desired input field:
+```javascript
+import 'maskdial/jquery'
 
-```html
-$('#your-input-id').maskedFormat({
-    iso: 'US' // Or  
-    phoneCode: '+1' // supported with or without plus(+) symbol
-});
+$('#phone').maskDial({
+  country: 'US',
+  onFormat: function(data) {
+    console.log('Formatted:', data.formatted)
+  }
+})
 
+// Get instance
+const instance = $('#phone').maskDial('instance')
+
+// Methods
+$('#phone').maskDial('getValue')     // "(202) 555-1234"
+$('#phone').maskDial('getE164')      // "+12025551234"
+$('#phone').maskDial('isValid')      // true
+$('#phone').maskDial('setCountry', 'GB')
+$('#phone').maskDial('destroy')
+
+// Events
+$('#phone').on('maskdial:format', function(e, data) {
+  console.log(data.formatted)
+})
+
+$('#phone').on('maskdial:validate', function(e, isValid, isPossible) {
+  console.log('Valid:', isValid)
+})
+
+$('#phone').on('maskdial:countrychange', function(e, country) {
+  console.log('Country:', country)
+})
 ```
 
-### 🛠 Configuration Options
+## Options
 
-    iso: The ISO country code. E.g., 'US', 'GB', 'IN', etc.
-    phoneCode: The phone code, if you want to determine the format using that. E.g., '+1', '+44', '+91', etc.
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `country` | `string` | `undefined` | ISO 3166-1 alpha-2 country code (e.g., 'US', 'GB') |
+| `defaultCountry` | `string` | `undefined` | Fallback country when auto-detection fails |
+| `international` | `boolean` | `false` | Show international format with country code |
+| `onFormat` | `function` | `undefined` | Callback after each format operation |
+| `onValidate` | `function` | `undefined` | Callback when validation state changes |
+| `onCountryChange` | `function` | `undefined` | Callback when detected country changes |
 
-### 🧩 Extending the Masks
+## Format Data
 
-We welcome and appreciate any contributions that help improve the MaskDial plugin.
+The `onFormat` callback receives a data object:
 
-### 📃 License
-This project is licensed under the MIT License
+```typescript
+interface FormatData {
+  formatted: string        // Display value
+  e164: string | undefined // E.164 format (+12025551234)
+  national: string         // National format (202) 555-1234
+  digits: string           // Raw digits only
+  country: string | undefined
+  countryCallingCode: string | undefined
+  isValid: boolean
+  isPossible: boolean
+  template: string | undefined
+}
+```
 
-### 🤝 Contributing
+## Utility Functions
 
-Contributions, issues, and feature requests are welcome! Feel free to check issues page.
+Import standalone utilities for custom use:
+
+```javascript
+import {
+  validatePhoneNumber,
+  getE164,
+  getNationalFormat,
+  getInternationalFormat,
+  detectCountry,
+  PhoneFormatter
+} from 'maskdial'
+
+// Validate
+const result = validatePhoneNumber('2025551234', 'US')
+console.log(result.isValid) // true
+
+// Format
+const e164 = getE164('2025551234', 'US') // "+12025551234"
+
+// Detect country
+const country = detectCountry('+442071234567') // "GB"
+```
+
+## Browser Support
+
+Modern browsers (Chrome, Firefox, Safari, Edge - last 2 versions)
+
+## Migration from v1
+
+### Breaking Changes
+
+- jQuery is no longer bundled - import separately
+- New option names: `iso` → `country`, `phoneCode` removed (auto-detected)
+- Plugin renamed: `maskedFormat` → `maskDial`
+
+### Before (v1)
+
+```javascript
+$('#phone').maskedFormat({
+  iso: 'US',
+  phoneCode: '+1',
+  prependCode: true
+})
+```
+
+### After (v2)
+
+```javascript
+import 'maskdial/jquery'
+
+$('#phone').maskDial({
+  country: 'US',
+  international: true
+})
+```
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Development with watch
+npm run dev
+
+# Run tests
+npm test
+
+# Build
+npm run build
+
+# Lint
+npm run lint
+```
+
+## License
+
+MIT

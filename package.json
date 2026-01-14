@@ -1,40 +1,100 @@
 {
   "name": "maskdial",
-  "version": "1.0.4",
-  "description": "A dynamic jQuery plugin for phone number formatting. Simplify global number input with auto-formatting based on ISO or phone code.",
-  "main": "format.min.js",
+  "version": "2.0.0",
+  "description": "Modern phone number formatting library with TypeScript support. Vanilla JS and jQuery plugin.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./jquery": {
+      "import": {
+        "types": "./dist/jquery.d.ts",
+        "default": "./dist/jquery.js"
+      },
+      "require": {
+        "types": "./dist/jquery.d.ts",
+        "default": "./dist/jquery.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src tests --ext .ts",
+    "lint:fix": "eslint src tests --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ruban-s/MaskDial.git"
   },
-  "keywords": [ 
+  "keywords": [
     "phone",
     "number",
     "formatting",
     "mask",
-    "masking",
     "input",
-    "field",
     "international",
     "jQuery",
     "plugin",
-    "dial",
-    "code",
-    "ISO", 
-    "country",
-    "maskdial",
-    "autocomplete",
+    "typescript",
+    "libphonenumber",
+    "e164",
     "validation",
     "telephone",
     "mobile"
   ],
   "author": "ruban-s",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ruban-s/MaskDial/issues"
   },
-  "homepage": "https://github.com/ruban-s/MaskDial#readme"
+  "homepage": "https://github.com/ruban-s/MaskDial#readme",
+  "dependencies": {
+    "libphonenumber-js": "^1.11.18"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "jquery": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "jquery": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }
