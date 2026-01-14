@@ -46,7 +46,17 @@ npm install maskdial yup
 ### CDN
 
 ```html
-<script src="https://unpkg.com/maskdial/dist/maskdial.umd.js"></script>
+<!-- unpkg (latest) -->
+<script src="https://unpkg.com/maskdial"></script>
+
+<!-- unpkg (pinned version) -->
+<script src="https://unpkg.com/maskdial@2.1.2"></script>
+
+<!-- jsDelivr (latest) -->
+<script src="https://cdn.jsdelivr.net/npm/maskdial"></script>
+
+<!-- jsDelivr (pinned version) -->
+<script src="https://cdn.jsdelivr.net/npm/maskdial@2.1.2"></script>
 ```
 
 ---
