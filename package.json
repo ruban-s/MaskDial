@@ -1,6 +1,6 @@
 {
   "name": "maskdial",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Modern phone number formatting library with React/Vue components, TypeScript support, Zod/Yup validators, and WCAG 2.2 accessibility. Drop-in replacement for intl-tel-input.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
