@@ -140,3 +140,12 @@ export interface ValidateEventDetail {
 export interface CountryChangeEventDetail {
   country: CountryCode | undefined
 }
+
+/**
+ * Validation result with detailed information
+ */
+export interface ValidationResult {
+  isValid: boolean
+  isPossible: boolean
+  error?: string
+}

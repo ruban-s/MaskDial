@@ -1,7 +1,7 @@
 {
   "name": "maskdial",
-  "version": "2.0.0",
-  "description": "Modern phone number formatting library with TypeScript support. Vanilla JS and jQuery plugin.",
+  "version": "2.1.0",
+  "description": "Modern phone number formatting library with React/Vue components, TypeScript support, Zod/Yup validators, and WCAG 2.2 accessibility. Drop-in replacement for intl-tel-input.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -25,6 +25,76 @@
         "types": "./dist/jquery.d.ts",
         "default": "./dist/jquery.cjs"
       }
+    },
+    "./react": {
+      "import": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.js"
+      },
+      "require": {
+        "types": "./dist/react/index.d.ts",
+        "default": "./dist/react/index.cjs"
+      }
+    },
+    "./vue": {
+      "import": {
+        "types": "./dist/vue/index.d.ts",
+        "default": "./dist/vue/index.js"
+      },
+      "require": {
+        "types": "./dist/vue/index.d.ts",
+        "default": "./dist/vue/index.cjs"
+      }
+    },
+    "./zod": {
+      "import": {
+        "types": "./dist/validators/zod.d.ts",
+        "default": "./dist/validators/zod.js"
+      },
+      "require": {
+        "types": "./dist/validators/zod.d.ts",
+        "default": "./dist/validators/zod.cjs"
+      }
+    },
+    "./yup": {
+      "import": {
+        "types": "./dist/validators/yup.d.ts",
+        "default": "./dist/validators/yup.js"
+      },
+      "require": {
+        "types": "./dist/validators/yup.d.ts",
+        "default": "./dist/validators/yup.cjs"
+      }
+    },
+    "./a11y": {
+      "import": {
+        "types": "./dist/a11y/index.d.ts",
+        "default": "./dist/a11y/index.js"
+      },
+      "require": {
+        "types": "./dist/a11y/index.d.ts",
+        "default": "./dist/a11y/index.cjs"
+      }
+    },
+    "./countries": {
+      "import": {
+        "types": "./dist/components/CountryData.d.ts",
+        "default": "./dist/components/CountryData.js"
+      },
+      "require": {
+        "types": "./dist/components/CountryData.d.ts",
+        "default": "./dist/components/CountryData.cjs"
+      }
+    },
+    "./flags": {
+      "import": {
+        "types": "./dist/components/flags/index.d.ts",
+        "default": "./dist/components/flags/index.js"
+      },
+      "require": {
+        "types": "./dist/components/flags/index.d.ts",
+        "default": "./dist/components/flags/index.cjs"
+      }
     }
   },
   "files": [
@@ -38,9 +108,9 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "lint": "eslint src tests --ext .ts",
-    "lint:fix": "eslint src tests --ext .ts --fix",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "lint": "eslint src tests --ext .ts,.tsx",
+    "lint:fix": "eslint src tests --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"tests/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
@@ -62,7 +132,17 @@
     "e164",
     "validation",
     "telephone",
-    "mobile"
+    "mobile",
+    "react",
+    "vue",
+    "zod",
+    "yup",
+    "accessibility",
+    "wcag",
+    "a11y",
+    "country-selector",
+    "flag-icons",
+    "phone-input"
   ],
   "author": "ruban-s",
   "license": "MIT",
@@ -75,6 +155,8 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.32",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
     "@vitest/coverage-v8": "^2.1.8",
@@ -82,15 +164,40 @@
     "eslint-config-prettier": "^9.1.0",
     "jsdom": "^25.0.1",
     "prettier": "^3.4.2",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "vue": "^3.5.0",
+    "yup": "^1.6.0",
+    "zod": "^3.24.0"
   },
   "peerDependencies": {
-    "jquery": ">=3.0.0"
+    "jquery": ">=3.0.0",
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0",
+    "vue": ">=3.0.0",
+    "zod": ">=3.0.0",
+    "yup": ">=1.0.0"
   },
   "peerDependenciesMeta": {
     "jquery": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "zod": {
+      "optional": true
+    },
+    "yup": {
       "optional": true
     }
   },
