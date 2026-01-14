@@ -10,23 +10,6 @@ Modern phone number formatting library with React/Vue components, TypeScript sup
 ![vue](https://img.shields.io/badge/Vue-3+-4FC08D)
 ![accessibility](https://img.shields.io/badge/WCAG-2.2-green)
 
-## Why MaskDial?
-
-| Feature | libphonenumber-js | intl-tel-input | **MaskDial** |
-|---------|:-----------------:|:--------------:|:------------:|
-| Phone Formatting | ✓ | ✓ | ✓ |
-| Validation | ✓ | ✓ | ✓ |
-| React Component | ✗ | ✗ | **✓** |
-| Vue 3 Composable | ✗ | ✗ | **✓** |
-| Country Selector | ✗ | ✓ | **✓** |
-| Flag Icons | ✗ | ✓ (images) | **✓ (emoji)** |
-| Zod/Yup Validators | ✗ | ✗ | **✓** |
-| Full TypeScript | ✓ | Partial | **✓** |
-| WCAG 2.2 A11y | ✗ | Partial | **✓** |
-| jQuery Support | ✗ | ✓ | **✓** |
-| Bundle Size | ~80KB | ~200KB+ | **~90KB** |
-| External Images | ✗ | Required | **None** |
-
 ## Features
 
 - **Framework Components** - React hooks/components and Vue 3 composables
