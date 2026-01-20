@@ -3,7 +3,10 @@ node_modules/
 
 # Build output
 dist/
-*.min.js
+!dist/maskdial.umd.js
+!dist/maskdial.umd.min.js
+!dist/maskdial.jquery.umd.js
+!dist/maskdial.jquery.umd.min.js
 
 # Test coverage
 coverage/
@@ -29,3 +32,6 @@ npm-debug.log*
 *.temp
 .cache/
 temp/
+
+# Test files
+test-*.html

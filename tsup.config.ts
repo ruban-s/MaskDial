@@ -79,12 +79,42 @@ export default defineConfig([
       options.jsx = 'automatic'
     },
   },
-  // UMD bundle for CDN (with libphonenumber-js bundled)
+  // UMD bundle for CDN - non-minified
   {
     entry: { 'maskdial.umd': 'src/index.ts' },
     format: ['iife'],
     globalName: 'MaskDial',
+    minify: false,
+    sourcemap: true,
+    outExtension: () => ({ js: '.js' }),
+  },
+  // UMD bundle for CDN - minified
+  {
+    entry: { 'maskdial.umd.min': 'src/index.ts' },
+    format: ['iife'],
+    globalName: 'MaskDial',
     minify: true,
     sourcemap: true,
+    outExtension: () => ({ js: '.js' }),
+  },
+  // jQuery UMD bundle for CDN - non-minified
+  {
+    entry: { 'maskdial.jquery.umd': 'src/jquery.ts' },
+    format: ['iife'],
+    globalName: 'MaskDialJQuery',
+    minify: false,
+    sourcemap: true,
+    external: ['jquery'],
+    outExtension: () => ({ js: '.js' }),
+  },
+  // jQuery UMD bundle for CDN - minified
+  {
+    entry: { 'maskdial.jquery.umd.min': 'src/jquery.ts' },
+    format: ['iife'],
+    globalName: 'MaskDialJQuery',
+    minify: true,
+    sourcemap: true,
+    external: ['jquery'],
+    outExtension: () => ({ js: '.js' }),
   },
 ])
