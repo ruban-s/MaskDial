@@ -3,10 +3,10 @@ node_modules/
 
 # Build output - ignore all except UMD bundles for CDN
 dist/*
-!dist/maskdial-*.umd.js
-!dist/maskdial-*.umd.min.js
-!dist/maskdial-*.jquery.umd.js
-!dist/maskdial-*.jquery.umd.min.js
+!dist/maskdial.umd.js
+!dist/maskdial.umd.min.js
+!dist/maskdial.jquery.umd.js
+!dist/maskdial.jquery.umd.min.js
 
 # Test coverage
 coverage/
