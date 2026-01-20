@@ -1,4 +1,7 @@
 import { defineConfig } from 'tsup'
+import pkg from './package.json'
+
+const version = pkg.version
 
 export default defineConfig([
   // Vanilla JS - ESM + CJS
@@ -81,7 +84,7 @@ export default defineConfig([
   },
   // UMD bundle for CDN - non-minified
   {
-    entry: { 'maskdial.umd': 'src/index.ts' },
+    entry: { [`maskdial-${version}.umd`]: 'src/index.ts' },
     format: ['iife'],
     globalName: 'MaskDial',
     target: 'es2017',
@@ -91,7 +94,7 @@ export default defineConfig([
   },
   // UMD bundle for CDN - minified
   {
-    entry: { 'maskdial.umd.min': 'src/index.ts' },
+    entry: { [`maskdial-${version}.umd.min`]: 'src/index.ts' },
     format: ['iife'],
     globalName: 'MaskDial',
     target: 'es2017',
@@ -101,7 +104,7 @@ export default defineConfig([
   },
   // jQuery UMD bundle for CDN - non-minified
   {
-    entry: { 'maskdial.jquery.umd': 'src/jquery.ts' },
+    entry: { [`maskdial-${version}.jquery.umd`]: 'src/jquery.ts' },
     format: ['iife'],
     globalName: 'MaskDialJQuery',
     target: 'es2017',
@@ -112,7 +115,7 @@ export default defineConfig([
   },
   // jQuery UMD bundle for CDN - minified
   {
-    entry: { 'maskdial.jquery.umd.min': 'src/jquery.ts' },
+    entry: { [`maskdial-${version}.jquery.umd.min`]: 'src/jquery.ts' },
     format: ['iife'],
     globalName: 'MaskDialJQuery',
     target: 'es2017',

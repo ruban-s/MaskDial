@@ -1,5 +1,5 @@
 "use strict";
-var MaskDial = (() => {
+var MaskDialJQuery = (() => {
   var __defProp = Object.defineProperty;
   var __defProps = Object.defineProperties;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -35,22 +35,18 @@ var MaskDial = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // src/index.ts
-  var src_exports = {};
-  __export(src_exports, {
-    EVENTS: () => EVENTS,
-    MaskDial: () => MaskDial,
+  // src/jquery.ts
+  var jquery_exports = {};
+  __export(jquery_exports, {
+    JQUERY_EVENTS: () => JQUERY_EVENTS,
     MaskDialCore: () => MaskDialCore,
+    MaskDialJQueryInstance: () => MaskDialJQueryInstance,
     PhoneFormatter: () => PhoneFormatter,
-    calculateCursorPosition: () => calculateCursorPosition,
-    countDigits: () => countDigits,
     detectCountry: () => detectCountry,
     getE164: () => getE164,
     getInternationalFormat: () => getInternationalFormat,
     getNationalFormat: () => getNationalFormat,
-    getNthDigitPosition: () => getNthDigitPosition,
-    isDeleteOperation: () => isDeleteOperation,
-    isDigit: () => isDigit,
+    initJQueryPlugin: () => initJQueryPlugin,
     isInternationalFormat: () => isInternationalFormat,
     phoneFormatter: () => phoneFormatter,
     validatePhoneNumber: () => validatePhoneNumber
@@ -4470,18 +4466,6 @@ var MaskDial = (() => {
   function isDigit(char) {
     return char >= "0" && char <= "9";
   }
-  function getNthDigitPosition(str, n) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-      if (isDigit(str[i])) {
-        count++;
-        if (count === n) {
-          return i;
-        }
-      }
-    }
-    return -1;
-  }
   function isDeleteOperation(oldValue, newValue) {
     const oldDigits = countDigits(oldValue);
     const newDigits = countDigits(newValue);
@@ -4668,6 +4652,236 @@ var MaskDial = (() => {
     }
   };
 
+  // src/adapters/jquery.ts
+  var JQUERY_EVENTS = {
+    FORMAT: "maskdial:format",
+    VALIDATE: "maskdial:validate",
+    COUNTRY_CHANGE: "maskdial:countrychange"
+  };
+  var DATA_KEY = "maskDial";
+  var MaskDialJQueryInstance = class {
+    constructor($element, options = {}) {
+      this.isComposing = false;
+      this.$element = $element;
+      this.element = $element[0];
+      this.core = new MaskDialCore(__spreadProps(__spreadValues({}, options), {
+        onFormat: (data) => {
+          var _a;
+          this.$element.trigger(JQUERY_EVENTS.FORMAT, [data]);
+          (_a = options.onFormat) == null ? void 0 : _a.call(options, data);
+        },
+        onValidate: (isValid, isPossible) => {
+          var _a;
+          this.$element.trigger(JQUERY_EVENTS.VALIDATE, [isValid, isPossible]);
+          (_a = options.onValidate) == null ? void 0 : _a.call(options, isValid, isPossible);
+        },
+        onCountryChange: (country) => {
+          var _a;
+          this.$element.trigger(JQUERY_EVENTS.COUNTRY_CHANGE, [country]);
+          (_a = options.onCountryChange) == null ? void 0 : _a.call(options, country);
+        }
+      }));
+      this.attachListeners();
+      this.$element.attr("type", "tel");
+      if (this.element.value) {
+        this.formatValue(this.element.value);
+      }
+    }
+    /**
+     * Attach jQuery event listeners
+     */
+    attachListeners() {
+      this.$element.on("input.maskdial", this.handleInput.bind(this)).on("focus.maskdial", this.handleFocus.bind(this)).on("blur.maskdial", this.handleBlur.bind(this)).on("paste.maskdial", this.handlePaste.bind(this)).on("keydown.maskdial", this.handleKeydown.bind(this)).on("compositionstart.maskdial", this.handleCompositionStart.bind(this)).on("compositionend.maskdial", this.handleCompositionEnd.bind(this));
+    }
+    /**
+     * Handle input event
+     */
+    handleInput() {
+      var _a;
+      if (this.isComposing) return;
+      const cursorPosition = (_a = this.element.selectionStart) != null ? _a : this.element.value.length;
+      this.formatValue(this.element.value, cursorPosition);
+    }
+    /**
+     * Handle focus event
+     */
+    handleFocus() {
+    }
+    /**
+     * Handle blur event
+     */
+    handleBlur() {
+      if (this.element.value) {
+        this.formatValue(this.element.value);
+      }
+    }
+    /**
+     * Handle paste event
+     */
+    handlePaste() {
+      requestAnimationFrame(() => {
+        this.formatValue(this.element.value);
+      });
+    }
+    /**
+     * Handle keydown event
+     */
+    handleKeydown(e) {
+      if (e.ctrlKey || e.metaKey) return;
+      const allowedKeys = [
+        "Backspace",
+        "Delete",
+        "ArrowLeft",
+        "ArrowRight",
+        "Tab",
+        "Enter",
+        "Home",
+        "End"
+      ];
+      if (allowedKeys.includes(e.key)) return;
+      if (!/[\d+]/.test(e.key)) {
+        if (e.key === "+" && this.element.selectionStart !== 0) {
+          e.preventDefault();
+        } else if (e.key !== "+") {
+          e.preventDefault();
+        }
+      }
+    }
+    /**
+     * Handle composition start
+     */
+    handleCompositionStart() {
+      this.isComposing = true;
+    }
+    /**
+     * Handle composition end
+     */
+    handleCompositionEnd() {
+      this.isComposing = false;
+      this.handleInput();
+    }
+    /**
+     * Format value and update input
+     */
+    formatValue(value, cursorPosition) {
+      var _a;
+      const oldValue = this.element.value;
+      const oldCursor = (_a = cursorPosition != null ? cursorPosition : this.element.selectionStart) != null ? _a : value.length;
+      const result2 = this.core.processInput(value, oldValue, oldCursor);
+      this.element.value = result2.formatted;
+      requestAnimationFrame(() => {
+        if (document.activeElement === this.element) {
+          this.element.setSelectionRange(result2.cursorPosition, result2.cursorPosition);
+        }
+      });
+    }
+    // Public API
+    getValue() {
+      return this.element.value;
+    }
+    getE164() {
+      return this.core.getE164();
+    }
+    getNational() {
+      return this.core.getNational();
+    }
+    getInternational() {
+      return this.core.getInternational();
+    }
+    getDigits() {
+      return this.core.getDigits();
+    }
+    isValid() {
+      return this.core.isValid();
+    }
+    isPossible() {
+      return this.core.isPossible();
+    }
+    getCountry() {
+      return this.core.getCountry();
+    }
+    getCountryCallingCode() {
+      return this.core.getCountryCallingCode();
+    }
+    setCountry(country) {
+      this.core.setCountry(country);
+      if (this.element.value) {
+        this.formatValue(this.element.value);
+      }
+    }
+    getOptions() {
+      return this.core.getOptions();
+    }
+    setOptions(options) {
+      this.core.setOptions(options);
+      if (this.element.value) {
+        this.formatValue(this.element.value);
+      }
+    }
+    destroy() {
+      this.$element.off(".maskdial");
+      this.$element.removeData(DATA_KEY);
+      this.core.reset();
+    }
+  };
+  function initJQueryPlugin(jQuery2) {
+    jQuery2.fn.maskDial = function(optionsOrMethod, ...args) {
+      var _a, _b, _c, _d, _e, _f;
+      if (typeof optionsOrMethod === "string") {
+        const method = optionsOrMethod;
+        const instance = this.first().data(DATA_KEY);
+        switch (method) {
+          case "instance":
+            return instance;
+          case "destroy":
+            this.each(function() {
+              const inst = jQuery2(this).data(DATA_KEY);
+              inst == null ? void 0 : inst.destroy();
+            });
+            return this;
+          case "getValue":
+            return (_a = instance == null ? void 0 : instance.getValue()) != null ? _a : "";
+          case "getE164":
+            return instance == null ? void 0 : instance.getE164();
+          case "getNational":
+            return (_b = instance == null ? void 0 : instance.getNational()) != null ? _b : "";
+          case "getInternational":
+            return (_c = instance == null ? void 0 : instance.getInternational()) != null ? _c : "";
+          case "getDigits":
+            return (_d = instance == null ? void 0 : instance.getDigits()) != null ? _d : "";
+          case "isValid":
+            return (_e = instance == null ? void 0 : instance.isValid()) != null ? _e : false;
+          case "isPossible":
+            return (_f = instance == null ? void 0 : instance.isPossible()) != null ? _f : false;
+          case "getCountry":
+            return instance == null ? void 0 : instance.getCountry();
+          case "setCountry":
+            this.each(function() {
+              const inst = jQuery2(this).data(DATA_KEY);
+              inst == null ? void 0 : inst.setCountry(args[0]);
+            });
+            return this;
+          case "setOptions":
+            this.each(function() {
+              const inst = jQuery2(this).data(DATA_KEY);
+              inst == null ? void 0 : inst.setOptions(args[0]);
+            });
+            return this;
+          default:
+            throw new Error(`MaskDial: Unknown method: ${method}`);
+        }
+      }
+      const options = optionsOrMethod;
+      this.each(function() {
+        const $el = jQuery2(this);
+        if ($el.data(DATA_KEY)) return;
+        const instance = new MaskDialJQueryInstance($el, options);
+        $el.data(DATA_KEY, instance);
+      });
+      return this;
+    };
+  }
+
   // src/core/validation.ts
   function validatePhoneNumber(phoneNumber, country) {
     const digits = phoneNumber.replace(/\D/g, "");
@@ -4736,224 +4950,12 @@ var MaskDial = (() => {
     return trimmed.startsWith("+") || trimmed.startsWith("00");
   }
 
-  // src/adapters/vanilla.ts
-  var EVENTS = {
-    FORMAT: "maskdial:format",
-    VALIDATE: "maskdial:validate",
-    COUNTRY_CHANGE: "maskdial:countrychange"
-  };
-  var MaskDial = class {
-    constructor(element, options = {}) {
-      this.isComposing = false;
-      if (typeof element === "string") {
-        const el = document.querySelector(element);
-        if (!el) {
-          throw new Error(`MaskDial: Element not found: ${element}`);
-        }
-        this.element = el;
-      } else {
-        this.element = element;
-      }
-      if (!(this.element instanceof HTMLInputElement)) {
-        throw new Error("MaskDial: Element must be an input element");
-      }
-      this.core = new MaskDialCore(__spreadProps(__spreadValues({}, options), {
-        onFormat: (data) => {
-          var _a;
-          this.emitEvent(EVENTS.FORMAT, { data });
-          (_a = options.onFormat) == null ? void 0 : _a.call(options, data);
-        },
-        onValidate: (isValid, isPossible) => {
-          var _a;
-          this.emitEvent(EVENTS.VALIDATE, { isValid, isPossible });
-          (_a = options.onValidate) == null ? void 0 : _a.call(options, isValid, isPossible);
-        },
-        onCountryChange: (country) => {
-          var _a;
-          this.emitEvent(EVENTS.COUNTRY_CHANGE, { country });
-          (_a = options.onCountryChange) == null ? void 0 : _a.call(options, country);
-        }
-      }));
-      this.handleInputBound = this.handleInput.bind(this);
-      this.handleFocusBound = this.handleFocus.bind(this);
-      this.handleBlurBound = this.handleBlur.bind(this);
-      this.handlePasteBound = this.handlePaste.bind(this);
-      this.handleKeydownBound = this.handleKeydown.bind(this);
-      this.handleCompositionStartBound = this.handleCompositionStart.bind(this);
-      this.handleCompositionEndBound = this.handleCompositionEnd.bind(this);
-      this.attachListeners();
-      this.element.setAttribute("type", "tel");
-      if (this.element.value) {
-        this.formatValue(this.element.value);
-      }
-    }
-    /**
-     * Attach DOM event listeners
-     */
-    attachListeners() {
-      this.element.addEventListener("input", this.handleInputBound);
-      this.element.addEventListener("focus", this.handleFocusBound);
-      this.element.addEventListener("blur", this.handleBlurBound);
-      this.element.addEventListener("paste", this.handlePasteBound);
-      this.element.addEventListener("keydown", this.handleKeydownBound);
-      this.element.addEventListener("compositionstart", this.handleCompositionStartBound);
-      this.element.addEventListener("compositionend", this.handleCompositionEndBound);
-    }
-    /**
-     * Detach DOM event listeners
-     */
-    detachListeners() {
-      this.element.removeEventListener("input", this.handleInputBound);
-      this.element.removeEventListener("focus", this.handleFocusBound);
-      this.element.removeEventListener("blur", this.handleBlurBound);
-      this.element.removeEventListener("paste", this.handlePasteBound);
-      this.element.removeEventListener("keydown", this.handleKeydownBound);
-      this.element.removeEventListener("compositionstart", this.handleCompositionStartBound);
-      this.element.removeEventListener("compositionend", this.handleCompositionEndBound);
-    }
-    /**
-     * Handle input event
-     */
-    handleInput() {
-      var _a;
-      if (this.isComposing) return;
-      const cursorPosition = (_a = this.element.selectionStart) != null ? _a : this.element.value.length;
-      this.formatValue(this.element.value, cursorPosition);
-    }
-    /**
-     * Handle focus event
-     */
-    handleFocus() {
-      if (this.element.value.length === 0) {
-      }
-    }
-    /**
-     * Handle blur event
-     */
-    handleBlur() {
-      if (this.element.value) {
-        this.formatValue(this.element.value);
-      }
-    }
-    /**
-     * Handle paste event
-     */
-    handlePaste(_e) {
-      requestAnimationFrame(() => {
-        this.formatValue(this.element.value);
-      });
-    }
-    /**
-     * Handle keydown for special keys
-     */
-    handleKeydown(e) {
-      if (e.ctrlKey || e.metaKey) return;
-      const allowedKeys = [
-        "Backspace",
-        "Delete",
-        "ArrowLeft",
-        "ArrowRight",
-        "Tab",
-        "Enter",
-        "Home",
-        "End"
-      ];
-      if (allowedKeys.includes(e.key)) return;
-      if (!/[\d+]/.test(e.key)) {
-        if (e.key === "+" && this.element.selectionStart !== 0) {
-          e.preventDefault();
-        } else if (e.key !== "+") {
-          e.preventDefault();
-        }
-      }
-    }
-    /**
-     * Handle composition start (IME input)
-     */
-    handleCompositionStart() {
-      this.isComposing = true;
-    }
-    /**
-     * Handle composition end (IME input)
-     */
-    handleCompositionEnd() {
-      this.isComposing = false;
-      this.handleInput();
-    }
-    /**
-     * Format the current value and update the input
-     */
-    formatValue(value, cursorPosition) {
-      var _a;
-      const oldValue = this.element.value;
-      const oldCursor = (_a = cursorPosition != null ? cursorPosition : this.element.selectionStart) != null ? _a : value.length;
-      const result2 = this.core.processInput(value, oldValue, oldCursor);
-      this.element.value = result2.formatted;
-      requestAnimationFrame(() => {
-        if (document.activeElement === this.element) {
-          this.element.setSelectionRange(result2.cursorPosition, result2.cursorPosition);
-        }
-      });
-    }
-    /**
-     * Emit a custom event on the element
-     */
-    emitEvent(eventName, detail) {
-      const event = new CustomEvent(eventName, {
-        detail,
-        bubbles: true,
-        cancelable: false
-      });
-      this.element.dispatchEvent(event);
-    }
-    // Public API
-    getValue() {
-      return this.element.value;
-    }
-    getE164() {
-      return this.core.getE164();
-    }
-    getNational() {
-      return this.core.getNational();
-    }
-    getInternational() {
-      return this.core.getInternational();
-    }
-    getDigits() {
-      return this.core.getDigits();
-    }
-    isValid() {
-      return this.core.isValid();
-    }
-    isPossible() {
-      return this.core.isPossible();
-    }
-    getCountry() {
-      return this.core.getCountry();
-    }
-    getCountryCallingCode() {
-      return this.core.getCountryCallingCode();
-    }
-    setCountry(country) {
-      this.core.setCountry(country);
-      if (this.element.value) {
-        this.formatValue(this.element.value);
-      }
-    }
-    getOptions() {
-      return this.core.getOptions();
-    }
-    setOptions(options) {
-      this.core.setOptions(options);
-      if (this.element.value) {
-        this.formatValue(this.element.value);
-      }
-    }
-    destroy() {
-      this.detachListeners();
-      this.core.reset();
-    }
-  };
-  return __toCommonJS(src_exports);
+  // src/jquery.ts
+  if (typeof jQuery !== "undefined") {
+    initJQueryPlugin(jQuery);
+  } else if (typeof $ !== "undefined") {
+    initJQueryPlugin($);
+  }
+  return __toCommonJS(jquery_exports);
 })();
-//# sourceMappingURL=maskdial.umd.js.map
+//# sourceMappingURL=maskdial-2.1.3.jquery.umd.js.map
