@@ -1,99 +1,99 @@
 {
   "name": "maskdial",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Modern phone number formatting library with React/Vue components, TypeScript support, Zod/Yup validators, and WCAG 2.2 accessibility. Drop-in replacement for intl-tel-input.",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
       },
       "require": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.cjs"
+        "default": "./dist/index.js"
       }
     },
     "./jquery": {
       "import": {
-        "types": "./dist/jquery.d.ts",
-        "default": "./dist/jquery.js"
+        "types": "./dist/jquery.d.mts",
+        "default": "./dist/jquery.mjs"
       },
       "require": {
         "types": "./dist/jquery.d.ts",
-        "default": "./dist/jquery.cjs"
+        "default": "./dist/jquery.js"
       }
     },
     "./react": {
       "import": {
-        "types": "./dist/react/index.d.ts",
-        "default": "./dist/react/index.js"
+        "types": "./dist/react/index.d.mts",
+        "default": "./dist/react/index.mjs"
       },
       "require": {
         "types": "./dist/react/index.d.ts",
-        "default": "./dist/react/index.cjs"
+        "default": "./dist/react/index.js"
       }
     },
     "./vue": {
       "import": {
-        "types": "./dist/vue/index.d.ts",
-        "default": "./dist/vue/index.js"
+        "types": "./dist/vue/index.d.mts",
+        "default": "./dist/vue/index.mjs"
       },
       "require": {
         "types": "./dist/vue/index.d.ts",
-        "default": "./dist/vue/index.cjs"
+        "default": "./dist/vue/index.js"
       }
     },
     "./zod": {
       "import": {
-        "types": "./dist/validators/zod.d.ts",
-        "default": "./dist/validators/zod.js"
+        "types": "./dist/validators/zod.d.mts",
+        "default": "./dist/validators/zod.mjs"
       },
       "require": {
         "types": "./dist/validators/zod.d.ts",
-        "default": "./dist/validators/zod.cjs"
+        "default": "./dist/validators/zod.js"
       }
     },
     "./yup": {
       "import": {
-        "types": "./dist/validators/yup.d.ts",
-        "default": "./dist/validators/yup.js"
+        "types": "./dist/validators/yup.d.mts",
+        "default": "./dist/validators/yup.mjs"
       },
       "require": {
         "types": "./dist/validators/yup.d.ts",
-        "default": "./dist/validators/yup.cjs"
+        "default": "./dist/validators/yup.js"
       }
     },
     "./a11y": {
       "import": {
-        "types": "./dist/a11y/index.d.ts",
-        "default": "./dist/a11y/index.js"
+        "types": "./dist/a11y/index.d.mts",
+        "default": "./dist/a11y/index.mjs"
       },
       "require": {
         "types": "./dist/a11y/index.d.ts",
-        "default": "./dist/a11y/index.cjs"
+        "default": "./dist/a11y/index.js"
       }
     },
     "./countries": {
       "import": {
-        "types": "./dist/components/CountryData.d.ts",
-        "default": "./dist/components/CountryData.js"
+        "types": "./dist/components/CountryData.d.mts",
+        "default": "./dist/components/CountryData.mjs"
       },
       "require": {
         "types": "./dist/components/CountryData.d.ts",
-        "default": "./dist/components/CountryData.cjs"
+        "default": "./dist/components/CountryData.js"
       }
     },
     "./flags": {
       "import": {
-        "types": "./dist/components/flags/index.d.ts",
-        "default": "./dist/components/flags/index.js"
+        "types": "./dist/components/flags/index.d.mts",
+        "default": "./dist/components/flags/index.mjs"
       },
       "require": {
         "types": "./dist/components/flags/index.d.ts",
-        "default": "./dist/components/flags/index.cjs"
+        "default": "./dist/components/flags/index.js"
       }
     }
   },
